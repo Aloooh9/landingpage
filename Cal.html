@@ -1,210 +1,346 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة رسوم المعاملات</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        h1, h2 {
-            color: #333;
-            text-align: center;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e9f7ef;
-            color: #2c662d;
-            border: 1px solid #c3e6cb;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>حاسبة رسوم المعاملات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Dubai', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      direction: auto;
+    }
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #004b87;
+      margin-bottom: 30px;
+      font-size: 26px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #00395a;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    .hidden {
+      display: none;
+    }
+    .buttons {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .buttons button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .buttons .calculate {
+      background-color: #0072ce;
+      color: #fff;
+    }
+    .buttons .calculate:hover {
+      background-color: #005fa3;
+    }
+    .buttons .reset {
+      background-color: #d93025;
+      color: #fff;
+    }
+    .buttons .reset:hover {
+      background-color: #a5281c;
+    }
+    .result {
+      background-color: #f0f9ff;
+      color: #004b87;
+      padding: 15px;
+      border: 1px solid #cce5ff;
+      border-radius: 6px;
+      margin-top: 25px;
+      font-size: 15px;
+    }
+    .lang-switch {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .lang-switch button {
+      background-color: #606b6e;
+      color: #fff;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .lang-switch button:hover {
+      background-color: #424c4f;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>حاسبة رسوم المعاملات</h1>
-        <div class="form-group">
-            <label for="transactionType">اختر نوع المعاملة</label>
-            <select id="transactionType" onchange="showQuestions()">
-                <option value="">-- اختر --</option>
-                <option value="Establishment MOA"> عقد تأسيس</option>
-                <option value="Sale MOA">عقد بيع حصص</option>
-                <option value="Shares Transfer">عقد تنازل عن حصص</option>
-                <option value="Addendum MOA">ملحق عقد تأسيس</option>
-                <option value="Shareholder Agreement">محضر اجتماع جمعية عمومية</option>
-                <option value="Legal Notice">انذار عدلي \ الغاء وكالة</option>
-                <option value="Power Of Attorney">توكيل</option>
-                <option value="Signature Attestation">تصديق توقيع</option>
-                <option value="Declaration of Guarantee">إقرار كفالة</option>
-                <option value="Non-Muslim Will">وصية لغير المسلمين</option>
-                <option value="Debt Acknowledgment">إقرار مديونية</option>
-            </select>
-        </div>
-        <div id="questions"></div>
-        <div id="result" class="result" style="display: none;"></div>
+  <div class="container">
+    <h1 id="page-title"></h1>
+
+    <!-- Transaction Type -->
+    <div class="form-group">
+      <label for="transactionType" id="transactionLabel"></label>
+      <select id="transactionType"></select>
     </div>
 
-    <script>
-        function showQuestions() {
-            const transactionType = document.getElementById("transactionType").value;
-            const questionsDiv = document.getElementById("questions");
-            questionsDiv.innerHTML = "";
-            document.getElementById("result").style.display = "none";
+    <!-- Dynamic Fields -->
+    <div id="form-fields" class="hidden">
+      <div class="form-group" id="group-totalSalePrice">
+        <label for="totalSalePrice" id="totalSalePriceLabel"></label>
+        <input type="number" id="totalSalePrice" min="0" step="0.01">
+      </div>
+      <div class="form-group" id="group-capitalIncrease">
+        <label for="capitalIncrease" id="capitalIncreaseLabel"></label>
+        <input type="number" id="capitalIncrease" min="0" step="0.01">
+      </div>
+      <div class="form-group" id="group-totalDebt">
+        <label for="totalDebt" id="totalDebtLabel"></label>
+        <input type="number" id="totalDebt" min="0" step="0.01">
+      </div>
+      <div class="form-group" id="group-numSigning">
+        <label for="numSigning" id="signersLabel"></label>
+        <input type="number" id="numSigning" min="1">
+      </div>
+      <div class="form-group" id="group-numPresent">
+        <label for="numPresent" id="presentLabel"></label>
+        <input type="number" id="numPresent" min="0">
+      </div>
+      <div class="form-group" id="group-numNotPresent">
+        <label for="numNotPresent" id="notPresentLabel"></label>
+        <input type="number" id="numNotPresent" min="0">
+      </div>
 
-            if (!transactionType) return;
+      <div class="buttons">
+        <button class="calculate" id="calculateBtn"></button>
+        <button class="reset" id="resetBtn"></button>
+      </div>
+    </div>
 
-            const isCommercial = [
-                "Establishment MOA", "Sale MOA", "Shares Transfer", 
-                "Addendum MOA", "Shareholder Agreement"
-            ].includes(transactionType);
+    <!-- Result -->
+    <div id="result" class="result hidden"></div>
 
-            let html = `
-                <div class="form-group">
-                    <label for="numSigning">كم عدد الأشخاص الذين سيوقعون؟</label>
-                    <input type="number" id="numSigning" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="numPresent">كم عدد الأشخاص الحاضرين؟</label>
-                    <input type="number" id="numPresent" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="numNotPresent">كم عدد الأشخاص عن طريق الاتصال المرئي؟</label>
-                    <input type="number" id="numNotPresent" min="0">
-                </div>
-            `;
+    <!-- Language Toggle -->
+    <div class="lang-switch">
+      <button id="langToggle"></button>
+    </div>
+  </div>
 
-            if (isCommercial) {
-                html += `
-                    <div class="form-group">
-                        <label for="totalSalePrice">إجمالي سعر البيع (إن وجدت)</label>
-                        <input type="number" id="totalSalePrice" min="0" step="0.01">
-                    </div>
-                    <div class="form-group">
-                        <label for="capitalIncrease">زيادة رأس المال (إن وجدت)</label>
-                        <input type="number" id="capitalIncrease" min="0" step="0.01">
-                    </div>
-                `;
-            } else if (transactionType === "Debt Acknowledgment") {
-                html += `
-                    <div class="form-group">
-                        <label for="totalDebt">ما هو إجمالي مبلغ الدين؟</label>
-                        <input type="number" id="totalDebt" min="0" step="0.01">
-                    </div>
-            `;
+  <script>
+    // Translation data
+    const translations = {
+      ar: {
+        title: "حاسبة رسوم المعاملات",
+        transactionLabel: "اختر نوع المعاملة",
+        totalSaleLabel: "إجمالي سعر البيع",
+        capitalIncreaseLabel: "زيادة رأس المال",
+        totalDebtLabel: "إجمالي المديونية",
+        signersLabel: "كم عدد الأشخاص الذين سيوقعون؟",
+        presentLabel: "كم عدد الأشخاص الحاضرين؟",
+        notPresentLabel: "كم عدد الأشخاص عن طريق الاتصال المرئي؟",
+        calculate: "احسب",
+        reset: "إعادة تعيين",
+        courtFee: "رسوم المحكمة",
+        serviceFee: "رسوم الخدمة",
+        total: "الإجمالي",
+        alertZero: "عدد الموقعين لا يمكن أن يكون صفرًا.",
+     alertMismatch: "يجب أن يكون مجموع الحاضرين وغير الحاضرين مساويًا لعدد الموقعين.",
+        langToggle: "Switch to English"
+      },
+      en: {
+        title: "Transaction Fee Calculator",
+        transactionLabel: "Select Transaction Type",
+        totalSaleLabel: "Total Sale Price",
+        capitalIncreaseLabel: "Capital Increase",
+        totalDebtLabel: "Total Debt",
+        signersLabel: "How many signers?",
+        presentLabel: "How many people are present?",
+        notPresentLabel: "How many via video call?",
+        calculate: "Calculate",
+        reset: "Reset",
+        courtFee: "Court Fee",
+        serviceFee: "Service Fee",
+        total: "Total",
+        alertZero: "Number of signers cannot be zero.",
+	alertMismatch: "The sum of those present and absent must equal the number of signatories.",
+        langToggle: "التبديل إلى العربية"
+      },
+      types: [
+        {value: "", ar: "-- اختر --", en: "-- Select --"},
+        {value: "Establishment MOA", ar: "عقد تأسيس", en: "Establishment MOA"},
+        {value: "Sale MOA", ar: "عقد بيع حصص", en: "Sale MOA"},
+        {value: "Shares Transfer", ar: "عقد تنازل عن حصص", en: "Shares Transfer"},
+        {value: "Addendum MOA", ar: "ملحق عقد تأسيس", en: "Addendum MOA"},
+        {value: "Shareholder Agreement", ar: "محضر اجتماع جمعية عمومية", en: "Shareholder Agreement"},
+        {value: "Legal Notice", ar: "انذار عدلي / الغاء وكالة", en: "Legal Notice / Power Revocation"},
+        {value: "Power Of Attorney", ar: "توكيل", en: "Power Of Attorney"},
+        {value: "Signature Attestation", ar: "تصديق توقيع", en: "Signature Attestation"},
+        {value: "Declaration of Guarantee", ar: "إقرار كفالة", en: "Declaration of Guarantee"},
+        {value: "Non-Muslim Will", ar: "وصية لغير المسلمين", en: "Non-Muslim Will"},
+        {value: "Debt Acknowledgment", ar: "إقرار مديونية", en: "Debt Acknowledgment"}
+      ]
+    };
+
+    // Current language
+    let lang = localStorage.getItem('lang') || 'ar';
+
+    // DOM elements
+    const sel = document.getElementById('transactionType');
+
+    // Populate dropdown
+    function populateOptions() {
+      sel.innerHTML = '';
+      translations.types.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.value;
+        opt.textContent = item[lang];
+        sel.appendChild(opt);
+      });
+    }
+
+    // Update all UI text
+    function updateUI() {
+      const t = translations[lang];
+      document.getElementById('page-title').textContent = t.title;
+      document.getElementById('transactionLabel').textContent = t.transactionLabel;
+      document.getElementById('totalSalePriceLabel').textContent = t.totalSaleLabel;
+      document.getElementById('capitalIncreaseLabel').textContent = t.capitalIncreaseLabel;
+      document.getElementById('totalDebtLabel').textContent = t.totalDebtLabel;
+      document.getElementById('signersLabel').textContent = t.signersLabel;
+      document.getElementById('presentLabel').textContent = t.presentLabel;
+      document.getElementById('notPresentLabel').textContent = t.notPresentLabel;
+      document.getElementById('calculateBtn').textContent = t.calculate;
+      document.getElementById('resetBtn').textContent = t.reset;
+      document.getElementById('langToggle').textContent = t.langToggle;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = (lang === 'ar' ? 'rtl' : 'ltr');
+      populateOptions();
+      showFormFields();
+    }
+
+    // Show relevant fields based on type
+    function showFormFields() {
+      const v = sel.value;
+      const ids = ['totalSalePrice','capitalIncrease','totalDebt','numSigning','numPresent','numNotPresent'];
+      ids.forEach(id => document.getElementById('group-' + id).classList.add('hidden'));
+      document.getElementById('form-fields').classList.toggle('hidden', v === '');
+
+      function show(...fields) {
+        fields.forEach(f => document.getElementById('group-' + f).classList.remove('hidden'));
+      }
+
+      if (v === 'Establishment MOA') {
+        show('numSigning','numPresent','numNotPresent','totalSalePrice');
+      } else if (['Sale MOA','Shares Transfer'].includes(v)) {
+        show('totalSalePrice','capitalIncrease','numSigning','numPresent','numNotPresent');
+      } else if (['Addendum MOA','Shareholder Agreement'].includes(v)) {
+        show('capitalIncrease','numSigning','numPresent','numNotPresent');
+      } else if (['Legal Notice','Power Of Attorney','Signature Attestation','Declaration of Guarantee','Non-Muslim Will'].includes(v)) {
+        show('numSigning','numPresent','numNotPresent');
+      } else if (v === 'Debt Acknowledgment') {
+        show('totalDebt','numSigning','numPresent','numNotPresent');
+      }
+    }
+
+    // Calculate fees
+    function calculate() {
+      const t = translations[lang];
+      const v = sel.value;
+      const nS = parseInt(document.getElementById('numSigning').value) || 0;
+      if (nS === 0) { alert(t.alertZero); return; }
+      const nP = parseFloat(document.getElementById('numPresent').value) || 0;
+      const nNP = parseFloat(document.getElementById('numNotPresent').value) || 0;
+
+  //  Add this validation check
+  if (nP + nNP !== nS) {
+    alert(t.alertMismatch);
+    return;
+  }
+      const ts = parseFloat(document.getElementById('totalSalePrice').value) || 0;
+      const ci = parseFloat(document.getElementById('capitalIncrease').value) || 0;
+      const td = parseFloat(document.getElementById('totalDebt').value) || 0;
+      let courtFee = 0, serviceFee = 0;
+
+      if (['Establishment MOA','Sale MOA','Shares Transfer','Addendum MOA','Shareholder Agreement'].includes(v)) {
+        const combined = ts + ci;
+        if (combined === 0) courtFee = nS * 200 + 20;
+        else if (combined <= 100000) courtFee = nS * 300 + 20;
+        else if (combined <= 3000000) courtFee = combined / 200 + 20;
+        else courtFee = 15020;
+        serviceFee = nP * 180.29 + nNP * 371.18;
+      } else if (v === 'Debt Acknowledgment') {
+        if (td <= 100000) courtFee = nS * 300 + 20;
+        else if (td <= 3000000) courtFee = td / 200 + 20;
+        else courtFee = 15020;
+        serviceFee = nP * 180.29 + nNP * 371.18;
+      } else {
+        if (['Legal Notice','Power Of Attorney','Signature Attestation','Declaration of Guarantee','Non-Muslim Will'].includes(v)) {
+          serviceFee = nP * 180.29 + nNP * 371.18;
         }
+        if (v === 'Power Of Attorney') courtFee = nS * 100 + 20;
+        else if (v === 'Non-Muslim Will') courtFee = nS * 2000 + 20;
+        else courtFee = nS * 200 + 20;
+      }
 
-            html += `
-                <button onclick="calculateTransactionPrice()">احسب</button>
-            `;
-            questionsDiv.innerHTML = html;
-        }
+      const total = courtFee + serviceFee;
+      const resDiv = document.getElementById('result');
+      resDiv.innerHTML = `
+        <p><strong>${t.courtFee}:</strong> ${courtFee.toFixed(2)} AED</p>
+        <p><strong>${t.serviceFee}:</strong> ${serviceFee.toFixed(2)} AED</p>
+        <p><strong>${t.total}:</strong> ${total.toFixed(2)} AED</p>
+      `;
+      resDiv.classList.remove('hidden');
+    }
 
-        function calculateTransactionPrice() {
-            const transactionType = document.getElementById("transactionType").value;
-            const numSigning = parseInt(document.getElementById("numSigning").value) || 0;
-            const numPresent = parseInt(document.getElementById("numPresent").value) || 0;
-            const numNotPresent = parseInt(document.getElementById("numNotPresent").value) || 0;
+    // Reset form
+    function resetForm() {
+      sel.value = '';
+ ['totalSalePrice','capitalIncrease','totalDebt','numSigning','numPresent','numNotPresent'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('result').classList.add('hidden');
+      showFormFields();
+    }
 
-            // Validation: Ensure numPresent + numNotPresent = numSigning
-            if (numPresent + numNotPresent !== numSigning) {
-                alert("يجب أن يكون مجموع الحاضرين وغير الحاضرين مساويًا لعدد الموقعين.");
-                return;
-            }
 
-            let courtFee = 0, serviceFee = 0, totalFee = 0;
 
-            if (["Establishment MOA", "Sale MOA", "Shares Transfer", "Addendum MOA", "Shareholder Agreement"].includes(transactionType)) {
-                const totalSalePrice = parseFloat(document.getElementById("totalSalePrice").value) || 0;
-                const capitalIncrease = parseFloat(document.getElementById("capitalIncrease").value) || 0;
-                const combinedPrice = totalSalePrice + capitalIncrease;
-
-                if (combinedPrice === 0) {
-                    courtFee = (numSigning * 200) + 20;
-                } else if (combinedPrice > 0 && combinedPrice <= 100000) {
-                    courtFee = (numSigning * 300) + 20;
-                } else if (combinedPrice > 100000 && combinedPrice <= 3000000) {
-                    courtFee = (combinedPrice / 200) + 20;
-                } else {
-                    courtFee = 15020;
-                }
-
-                serviceFee = (numPresent * 180.29) + (numNotPresent * 371.18);
-            } else if (transactionType === "Debt Acknowledgment") {
-                const totalDebt = parseFloat(document.getElementById("totalDebt").value) || 0;
-
-                if (totalDebt > 0 && totalDebt <= 100000) {
-                    courtFee = (numSigning * 300) + 20;
-                } else if (totalDebt > 100000 && totalDebt <= 3000000) {
-                    courtFee = (totalDebt / 200) + 20;
-                } else if (totalDebt > 3000000) {
-                    courtFee = 15020;
-                }
-    // Service Fee for Debt Acknowledgment
-    serviceFee = (numPresent * 180.29) + (numNotPresent * 371.18);                
-            } else {
-                if (["Legal Notice", "Power Of Attorney", "Signature Attestation", "Declaration of Guarantee", "Non-Muslim Will"].includes(transactionType)) {
-                    serviceFee = (numPresent * 180.29) + (numNotPresent * 371.18);
-                }
-
-                if (transactionType === "Power Of Attorney") {
-                    courtFee = (numSigning * 100) + 20;
-                } else if (transactionType === "Non-Muslim Will") {
-                    courtFee = (numSigning * 2000) + 20;
-                } else {
-                    courtFee = (numSigning * 200) + 20;
-                }
-            }
-
-            totalFee = courtFee + serviceFee;
-
-            document.getElementById("result").style.display = "block";
-            document.getElementById("result").innerHTML = `
-                <p><strong>رسوم المحكمة:</strong> ${courtFee.toFixed(2)} درهم</p>
-                <p><strong>رسوم الخدمة:</strong> ${serviceFee.toFixed(2)} درهم</p>
-                <p><strong>الإجمالي:</strong> ${totalFee.toFixed(2)} درهم</p>
-            `;
-        }
-    </script>
+    // Event Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('langToggle').addEventListener('click', () => {
+        lang = (lang === 'ar' ? 'en' : 'ar');
+        localStorage.setItem('lang', lang);
+        updateUI();
+      });
+      sel.addEventListener('change', showFormFields);
+      document.getElementById('calculateBtn').addEventListener('click', calculate);
+      document.getElementById('resetBtn').addEventListener('click', resetForm);
+      updateUI();
+    });
+  </script>
 </body>
 </html>
